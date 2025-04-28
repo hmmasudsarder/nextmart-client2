@@ -3,6 +3,7 @@ import { IProduct } from "@/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { addCoupon } from "@/services/cart";
+import { toast } from "sonner";
 
 export interface CartProduct extends IProduct {
   orderQuantity: number;
@@ -75,6 +76,7 @@ const cartSlice = createSlice({
 
       if (productToAdd) {
         productToAdd.orderQuantity += 1;
+        toast.error("Product already in cart");
         return;
       }
 

@@ -15,12 +15,14 @@ import { IProduct } from "@/types";
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "sonner";
 
 const ProductCard = ({ product }: { product: IProduct }) => {
   const dispatch = useAppDispatch();
 
   const handleAddProduct = (product: IProduct) => {
     dispatch(addProduct(product));
+    toast.success("Product added to cart")
   };
 
   return (

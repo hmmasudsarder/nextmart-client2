@@ -1,7 +1,7 @@
 "use client";
-import Logo from "@/app/assets/svgs/Logo";
+
 import { Button } from "../ui/button";
-import { Heart, LogOut, ShoppingBag } from "lucide-react";
+import { Heart, LogOut, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -16,11 +16,14 @@ import { logout } from "@/services/AuthService";
 import { useUser } from "@/context/UserContext";
 import { usePathname, useRouter } from "next/navigation";
 import { protectedRoutes } from "@/contants";
+import { useAppSelector } from "@/redux/hooks";
+import { orderedProductsSelector } from "@/redux/features/cartSlice";
 
 export default function Navbar() {
   const { user, setIsLoading } = useUser();
   const pathname = usePathname();
   const router = useRouter();
+  const products = useAppSelector(orderedProductsSelector);
 
   const handleLogOut = () => {
     logout();
@@ -31,11 +34,12 @@ export default function Navbar() {
   };
 
   return (
-    <header className="border-b w-full">
-      <div className="container flex justify-between items-center mx-auto h-16 px-3">
+    <header className="border-b bg-background w-full sticky top-0 z-10">
+      <div className="container flex justify-between items-center mx-auto h-16 px-5">
         <Link href="/">
           <h1 className="text-2xl font-black flex items-center">
-            <Logo /> Next Mart
+            {/* <Logo /> */}
+             Next Mart
           </h1>
         </Link>
         <div className="max-w-md  flex-grow">
@@ -49,14 +53,19 @@ export default function Navbar() {
           <Button variant="outline" className="rounded-full p-0 size-10">
             <Heart />
           </Button>
-          <Link href="/cart">
-            <Button variant="outline" className="rounded-full p-0 size-10">
-              <ShoppingBag />
+          <Link href="/cart" passHref>
+            <Button
+              variant="outline"
+              className="rounded-full size-10 flex items-center justify-center gap-1"
+            >
+              <ShoppingCart className="w-5 h-5" />
+              <span className="text-red-500 font-bold">
+                {products?.length ?? 0}
+              </span>
             </Button>
           </Link>
 
-
-          {user ? (
+          {user?.email ? (
             <>
               <Link href="/create-shop">
                 <Button className="rounded-full">Create Shop</Button>
@@ -73,9 +82,9 @@ export default function Navbar() {
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>Profile</DropdownMenuItem>
-                  <Link href={'/user/dashboard'}>
-                    <DropdownMenuItem>Dashboard</DropdownMenuItem>
-                  </Link>
+                  <DropdownMenuItem>
+                    <Link href={`/${user?.role}`}>Dashboard</Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem>My Shop</DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
